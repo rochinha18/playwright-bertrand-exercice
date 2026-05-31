@@ -8,5 +8,5 @@
         "skipLibCheck": true,
         "noEmit": true
     },
-    "include": ["playwright.config.ts", "tests/**/*.ts", "e2e/**/*.ts"]
+    "include": ["playwright.config.ts", "tests/**/*.ts", "e2e/**/*.ts", "helpers.ts"]
 }

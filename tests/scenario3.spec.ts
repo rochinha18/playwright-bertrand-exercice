@@ -1,12 +1,14 @@
 import { test, expect } from '@playwright/test';
+import { acceptCookies } from '../helpers';
 
 const nameBook = 'Do Not Disturb';
 const authorBook = 'Freida McFadden';
 const languageBook = 'Inglês';
 const flagBook = 'Inglês';
 
-test('test', async ({ page }) => {
+test('Scenario 3 - Validate "Do Not Disturb" book language and flag', async ({ page }) => {
   await page.goto('https://www.bertrand.pt/');
+  await acceptCookies(page);
 
   // search input
   const searchInput = await page.locator('#form-searchform-palavra').fill(nameBook);
