@@ -1,41 +1,24 @@
-import { test, expect } from '@playwright/test';
-import { acceptCookies } from '../helpers';
+import { test } from '@playwright/test';
+import { AuthorPage } from '../pages/AuthorPage';
+import { HomePage } from '../pages/HomePage';
+import { ProductPage } from '../pages/ProductPage';
 
 const nameBook = '1984';
 const authorBook = 'George Orwell';
 const titleBook = 'A Quinta dos Animais';
 
 test('Scenario 2 - Verify that "A Quinta dos Animais" has the same author as 1984', async ({ page }) => {
-  await page.goto('https://www.bertrand.pt/');
-  await acceptCookies(page);
+  const homePage = new HomePage(page);
+  const productPage = new ProductPage(page);
+  const authorPage = new AuthorPage(page);
 
-  // search input
-  await page.locator('#form-searchform-palavra').fill(nameBook);
-  
-  // button search
-  await page.getByRole('button', { name: 'pesquisar' }).click();
-  
-  // click on first option
-  await page.getByRole('link', { name: nameBook }).first().click();
+  await homePage.goto();
+  await homePage.searchAndOpenFirstResult(nameBook);
 
-  // check other books from same author
-  const contentAuthor = await page.locator('#productPageSectionAboutAuthor-bestsellers-title');
-  await expect(contentAuthor).toBeVisible();
-  await contentAuthor.click();
+  await productPage.openAuthorBestsellers();
 
-  // check if book appear in "Destaque" area
-  const featuredContainer = await page.locator('.autor-featured-container');
-  await expect(featuredContainer).toBeVisible();
-  await expect(featuredContainer).toContainText('Em destaque');
-  await expect(featuredContainer).toContainText(titleBook);
+  await authorPage.expectFeaturedBook(titleBook);
+  await authorPage.openFirstFeaturedBook();
 
-  // if exists check the info
-  const featuredBook = await featuredContainer.locator('.featured-book img').first();
-  await expect(featuredBook).toBeVisible();
-  await featuredBook.click();
-
-  // check the author
-  const author = await page.locator('#productPageSectionDetails-collapseDetalhes-content-author');
-  await expect(author).toBeVisible();
-  await expect(author).toContainText(authorBook);
+  await productPage.expectAuthor(authorBook);
 });
